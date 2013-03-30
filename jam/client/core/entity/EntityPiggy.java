@@ -24,17 +24,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.stats.AchievementList;
 import net.minecraft.world.World;
+import net.minecraftforge.event.ForgeSubscribe;
 
 public class EntityPiggy extends EntityAnimal  {
 	
-	 /** AI task for player control. */
-    private final EntityAIControlledByPlayer aiControlledByPlayer;
+	private final EntityAIControlledByPlayer aiControlledByPlayer;
 
-    public EntityPiggy(World par1World)
-    {
-        super(par1World);
-        this.texture = "/mods/modjam/textures/mobs/pig.png";
-        this.setSize(0.9F, 0.9F);
+	public EntityPiggy(World par1World) {
+		super(par1World);
+		this.texture = "/mods/modjam/textures/mobs/pig.png";
+		this.setSize(0.9F, 0.9F);
         this.getNavigator().setAvoidsWater(true);
         float f = 0.25F;
         this.tasks.addTask(0, new EntityAISwimming(this));
@@ -222,13 +221,6 @@ public class EntityPiggy extends EntityAnimal  {
             this.worldObj.spawnEntityInWorld(entitypigzombie);
             this.setDead();
         }
-    }
-    
-    protected void addRandomArmor()
-    {
-		super.addRandomArmor();
-        this.setCurrentItemOrArmor(1, new ItemStack(Item.helmetDiamond));
-        System.out.println("Equipping!");
     }
 
     /**

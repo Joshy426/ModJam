@@ -24,6 +24,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -31,8 +32,13 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.src.ModLoader;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.player.EntityInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -59,6 +65,9 @@ serverPacketHandlerSpec = @SidedPacketHandler(channels = {}, packetHandler = Ser
 
 public class ModJam {
 	
+	World world;
+	EntityPig pig = new EntityPig(world);
+	EntityPiggy piggy = new EntityPiggy(world);
 	@Instance("modjam")
 	// The instance, this is very important later on
 	public static ModJam instance = new ModJam();
@@ -109,10 +118,30 @@ public class ModJam {
 		NetworkRegistry.instance().registerGuiHandler(instance, proxy);
 		proxy.initMod();
 		proxy.initTileEntities();
+		MinecraftForge.EVENT_BUS.register(this);
 		int redColor = (255 << 16);
 	    int orangeColor = (255 << 16)+ (200 << 8);
 		ModLoader.registerEntityID(EntityBoss.class, "Boss", ModLoader.getUniqueEntityId(), redColor,orangeColor);
 		ModLoader.registerEntityID(EntityPiggy.class, "Pig", ModLoader.getUniqueEntityId(), redColor,orangeColor);
 	}
+	
+	@ForgeSubscribe
+	public void onInteract(EntityInteractEvent event) {
+		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER && event.target instanceof EntityPig) {
+			event.target.setDead();
+		String name = event.target.getEntityName();
+			
+			double posX = event.target.posX;
+			double posY = event.target.posY;
+			double posZ = event.target.posZ;
+			//world.spawnEntityInWorld(piggy);
+			System.out.println(name);
+			world.joinEntityInSurroundings(piggy);
+			System.out.println("Coordinates:" + posX + posY + posZ);
+			
+		}
+	}
+	
+	
 
 }
