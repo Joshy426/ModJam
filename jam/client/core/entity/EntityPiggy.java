@@ -239,9 +239,9 @@ public class EntityPiggy extends EntityAnimal  {
     /**
      * This function is used when two same-species animals in 'love mode' breed to generate the new baby animal.
      */
-    public EntityPig spawnBabyAnimal(EntityAgeable par1EntityAgeable)
+    public EntityPiggy spawnBabyAnimal(EntityAgeable par1EntityAgeable)
     {
-        return new EntityPig(this.worldObj);
+        return new EntityPiggy(this.worldObj);
     }
 
     /**

@@ -23,15 +23,22 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.passive.EntityPig;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.potion.Potion;
 import net.minecraft.src.ModLoader;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.Configuration;
@@ -54,6 +61,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @NetworkMod(clientSideRequired = true, serverSideRequired = false, // Whether
 clientPacketHandlerSpec = @SidedPacketHandler(channels = { "ModJam" }, packetHandler = ClientPacketHandler.class), // For
@@ -64,17 +72,15 @@ serverPacketHandlerSpec = @SidedPacketHandler(channels = {}, packetHandler = Ser
 
 
 public class ModJam {
-	
-	World world;
-	EntityPig pig = new EntityPig(world);
-	EntityPiggy piggy = new EntityPiggy(world);
+
+	//EntityPiggy piggy = new EntityPiggy(world);
 	@Instance("modjam")
 	// The instance, this is very important later on
 	public static ModJam instance = new ModJam();
 
 	@SidedProxy(clientSide = "client.core.ClientProxy", serverSide = "common.core.CommonProxy")
 	// Tells Forge the location of your proxies
-	
+
 	public static CommonProxy proxy;
 	public static List<ItemStack> inputs;
 
@@ -120,28 +126,71 @@ public class ModJam {
 		proxy.initTileEntities();
 		MinecraftForge.EVENT_BUS.register(this);
 		int redColor = (255 << 16);
-	    int orangeColor = (255 << 16)+ (200 << 8);
+		int orangeColor = (255 << 16)+ (200 << 8);
 		ModLoader.registerEntityID(EntityBoss.class, "Boss", ModLoader.getUniqueEntityId(), redColor,orangeColor);
 		ModLoader.registerEntityID(EntityPiggy.class, "Pig", ModLoader.getUniqueEntityId(), redColor,orangeColor);
 	}
-	
-	@ForgeSubscribe
+
+	/*@ForgeSubscribe
 	public void onInteract(EntityInteractEvent event) {
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER && event.target instanceof EntityPig) {
-			event.target.setDead();
 		String name = event.target.getEntityName();
-			
+			World world = event.entity.worldObj;
+			EntityPig pig = new EntityPig(world);
 			double posX = event.target.posX;
 			double posY = event.target.posY;
 			double posZ = event.target.posZ;
 			//world.spawnEntityInWorld(piggy);
 			System.out.println(name);
-			world.joinEntityInSurroundings(piggy);
+			if(!pig.worldObj.isRemote) {
+				world.setSpawnLocation((int)posX, (int)posY, (int)posZ);
+				Entity e = new EntityPiggy(world);
+				e.posX = posX;
+				e.posY = posY;
+				e.posZ = posZ;
+				System.out.println("Works!");
+				world.spawnEntityInWorld(e);
+				//event.target.setDead();
+	                }
 			System.out.println("Coordinates:" + posX + posY + posZ);
-			
+
+		}
+	}*/
+	@ForgeSubscribe
+
+	public void entityInteracted(EntityInteractEvent ev){
+
+		EntityPlayer player = ev.entityPlayer;
+		ItemStack itemstack = player.getCurrentEquippedItem();
+
+		Entity target = ev.target;
+
+
+
+		if (target instanceof EntityPig && itemstack != null && itemstack.getItem() == Item.appleGold)
+		{
+			EntityPig oldpiggy = (EntityPig) ev.target;
+			World world = target.worldObj;
+
+			if (world.isRemote)
+			{
+				return;
+			}
+			EntityPiggy newpiggy = new EntityPiggy(world);
+			newpiggy.setLocationAndAngles(oldpiggy.posX, oldpiggy.posY, oldpiggy.posZ, oldpiggy.rotationYaw, oldpiggy.rotationPitch);
+			world.spawnEntityInWorld(newpiggy);
+			oldpiggy.setDead();
+			System.out.println("Attempted!");
+			if (!player.capabilities.isCreativeMode)
+            {
+                --itemstack.stackSize;
+            }
+
+            if (itemstack.stackSize <= 0)
+            {
+                player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack)null);
+            }
+				return;
+			}   
 		}
 	}
-	
-	
-
-}
