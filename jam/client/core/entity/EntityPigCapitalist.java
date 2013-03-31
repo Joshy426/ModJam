@@ -2,6 +2,7 @@ package client.core.entity;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockCloth;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
@@ -44,7 +45,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-public class EntityPigCapitalist extends EntityTameable
+public class EntityPigCapitalist extends EntityCapitalistContainer
 {
     private float field_70926_e;
     private float field_70924_f;
@@ -460,4 +461,30 @@ public class EntityPigCapitalist extends EntityTameable
     {
         return this.spawnBabyAnimal(par1EntityAgeable);
     }
+
+	@Override
+	public int getSizeInventory() {
+		return 27;
+	}
+	
+	public int func_94087_l()
+    {
+        return 1;
+    }
+
+    public Block func_94093_n()
+    {
+        return Block.chest;
+    }
+
+    public int func_94085_r()
+    {
+        return 8;
+    }
+
+	@Override
+	public boolean isInvNameLocalized() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

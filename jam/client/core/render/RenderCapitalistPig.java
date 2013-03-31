@@ -16,6 +16,8 @@ import net.minecraft.block.Block;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.model.ModelBook;
+import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.model.ModelPig;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.RenderLiving;
@@ -29,6 +31,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityEnchantmentTable;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -58,6 +62,7 @@ public class RenderCapitalistPig extends RenderLiving {
     public void renderLivingPig(EntityPigCapitalist par1EntityPig, double par2, double par4, double par6, float par8, float par9)
     {
         super.doRenderLiving(par1EntityPig, par2, par4, par6, par8, par9);
+        
     }
 
     /**

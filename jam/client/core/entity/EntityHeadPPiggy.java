@@ -355,6 +355,9 @@ public class EntityHeadPPiggy extends EntityTameable
 
         if (this.isTamed())
         {
+        	int test = itemstack.getDamageVsEntity(par1EntityPlayer);
+        	System.out.println(test);
+        	System.out.println("test");
             if (itemstack != null)
             {
                 if (Item.itemsList[itemstack.itemID] instanceof ItemFood)
