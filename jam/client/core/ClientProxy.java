@@ -1,11 +1,14 @@
 package client.core;
 
 import client.core.entity.EntityBoss;
-import client.core.entity.EntityPiggy;
+import client.core.entity.EntityHeadPPiggy;
+import client.core.entity.EntityPigCapitalist;
 import client.core.model.ModelBoss;
-import client.core.model.ModelPiggy;
+import client.core.model.ModelCapitalistPig;
+import client.core.model.ModelHeadPPiggy;
 import client.core.render.RenderBoss;
-import client.core.render.RenderPiggy;
+import client.core.render.RenderCapitalistPig;
+import client.core.render.RenderHeadPPiggy;
 import common.ModJam;
 import common.core.CommonProxy;
 
@@ -33,7 +36,8 @@ public class ClientProxy extends CommonProxy {
 		//RenderingRegistry.registerBlockHandler(new RenderTable(NanoEnergy.modelID));
 		//ClientRegistry.bindTileEntitySpecialRenderer(TileNanoTable.class, new RenderTable(NanoEnergy.modelID));
 		 RenderingRegistry.registerEntityRenderingHandler(EntityBoss.class, new RenderBoss(new ModelBoss(), 0.5F));
-		 RenderingRegistry.registerEntityRenderingHandler(EntityPiggy.class, new RenderPiggy(new ModelPiggy(0), base, 0.5F));
+		 RenderingRegistry.registerEntityRenderingHandler(EntityHeadPPiggy.class, new RenderHeadPPiggy(new ModelHeadPPiggy(0), base, 0.5F));
+		 RenderingRegistry.registerEntityRenderingHandler(EntityPigCapitalist.class, new RenderCapitalistPig(new ModelCapitalistPig(0), base, 0.5F));
 		
 
 	}

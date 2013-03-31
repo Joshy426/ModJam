@@ -11,7 +11,8 @@ import java.util.Map;
 import java.util.Set;
 
 import client.core.entity.EntityBoss;
-import client.core.entity.EntityPiggy;
+import client.core.entity.EntityHeadPPiggy;
+import client.core.entity.EntityPigCapitalist;
 import client.core.handlers.ClientPacketHandler;
 import client.core.item.ItemWand;
 
@@ -36,6 +37,7 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.potion.Potion;
 import net.minecraft.src.ModLoader;
 import net.minecraft.util.MathHelper;
@@ -128,7 +130,8 @@ public class ModJam {
 		int redColor = (255 << 16);
 		int orangeColor = (255 << 16)+ (200 << 8);
 		ModLoader.registerEntityID(EntityBoss.class, "Boss", ModLoader.getUniqueEntityId(), redColor,orangeColor);
-		ModLoader.registerEntityID(EntityPiggy.class, "Pig", ModLoader.getUniqueEntityId(), redColor,orangeColor);
+		ModLoader.registerEntityID(EntityHeadPPiggy.class, "Pig", ModLoader.getUniqueEntityId(), redColor,orangeColor);
+		ModLoader.registerEntityID(EntityPigCapitalist.class, "CapitalistPig", ModLoader.getUniqueEntityId(), redColor,orangeColor);
 	}
 
 	/*@ForgeSubscribe
@@ -169,28 +172,67 @@ public class ModJam {
 
 		if (target instanceof EntityPig && itemstack != null && itemstack.getItem() == Item.appleGold)
 		{
-			EntityPig oldpiggy = (EntityPig) ev.target;
-			World world = target.worldObj;
+				EntityPig oldpiggy = (EntityPig) ev.target;
+				World world = target.worldObj;
 
-			if (world.isRemote)
+				if (world.isRemote)
+				{
+					return;
+				}
+				
+				
+				EntityHeadPPiggy newpiggy = new EntityHeadPPiggy(world);
+				newpiggy.setLocationAndAngles(oldpiggy.posX, oldpiggy.posY, oldpiggy.posZ, oldpiggy.rotationYaw, oldpiggy.rotationPitch);
+				world.spawnEntityInWorld(newpiggy);
+				oldpiggy.setDead();
+				newpiggy.setTamed(true);
+				newpiggy.setPathToEntity((PathEntity)null);
+				newpiggy.setAttackTarget((EntityLiving)null);
+				newpiggy.setEntityHealth(20);
+				newpiggy.setOwner(player.username);
+				newpiggy.worldObj.setEntityState(newpiggy, (byte)7);
+				System.out.println("Attempted!");
+				if (!player.capabilities.isCreativeMode)
+				{
+					--itemstack.stackSize;
+				}
+
+				if (itemstack.stackSize <= 0)
+				{
+					player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack)null);
+				}
+				return;
+			} 
+			if (target instanceof EntityPig && itemstack != null && itemstack.getItem() == Item.diamond)
 			{
-				return;
-			}
-			EntityPiggy newpiggy = new EntityPiggy(world);
-			newpiggy.setLocationAndAngles(oldpiggy.posX, oldpiggy.posY, oldpiggy.posZ, oldpiggy.rotationYaw, oldpiggy.rotationPitch);
-			world.spawnEntityInWorld(newpiggy);
-			oldpiggy.setDead();
-			System.out.println("Attempted!");
-			if (!player.capabilities.isCreativeMode)
-            {
-                --itemstack.stackSize;
-            }
+					EntityPig oldpiggy = (EntityPig) ev.target;
+					World world = target.worldObj;
 
-            if (itemstack.stackSize <= 0)
-            {
-                player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack)null);
-            }
-				return;
-			}   
+					if (world.isRemote)
+					{
+						return;
+					}
+					EntityPigCapitalist newpiggy = new EntityPigCapitalist(world);
+					newpiggy.setLocationAndAngles(oldpiggy.posX, oldpiggy.posY, oldpiggy.posZ, oldpiggy.rotationYaw, oldpiggy.rotationPitch);
+					world.spawnEntityInWorld(newpiggy);
+					oldpiggy.setDead();
+					newpiggy.setTamed(true);
+					newpiggy.setPathToEntity((PathEntity)null);
+					newpiggy.setAttackTarget((EntityLiving)null);
+					newpiggy.setEntityHealth(20);
+					newpiggy.setOwner(player.username);
+					newpiggy.worldObj.setEntityState(newpiggy, (byte)7);
+					System.out.println("Attempted!");
+					if (!player.capabilities.isCreativeMode)
+					{
+						--itemstack.stackSize;
+					}
+
+					if (itemstack.stackSize <= 0)
+					{
+						player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack)null);
+					}
+					return;
+				}
+			}
 		}
-	}
