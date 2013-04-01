@@ -13,9 +13,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.MathHelper;
 
-public class ModelCapitalistPig extends ModelPig {
+public class ModelLooterPig extends ModelPig {
 	ModelChest chest = new ModelChest();
-    public ModelCapitalistPig(float par1)
+    public ModelLooterPig(float par1)
     {
         super(par1);
         //Base

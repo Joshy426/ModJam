@@ -2,6 +2,7 @@ package client.core.entity;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockCloth;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
@@ -44,7 +45,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-public class EntityWarriorPig extends EntityTameable
+public class EntityAdvWarriorPig extends EntityAdvWarriorContainer
 {
     private float field_70926_e;
     private float field_70924_f;
@@ -60,13 +61,13 @@ public class EntityWarriorPig extends EntityTameable
     private float prevTimeWolfIsShaking;
     private final EntityAIControlledByPlayer aiControlledByPlayer;
 
-    public EntityWarriorPig(World par1World)
+    public EntityAdvWarriorPig(World par1World)
     {
         super(par1World);
-        this.texture = "/mods/modjam/textures/mobs/warrior.png";
+        this.texture = "/mods/modjam/textures/mobs/capitalist.png";
         this.setSize(0.9F, 0.9F);
-        this.moveSpeed = 0.375F;
-        float f = 0.325F;
+        this.moveSpeed = 0.3F;
+        float f = 0.25F;
         this.getNavigator().setAvoidsWater(true);
         this.tasks.addTask(0, new EntityAISwimming(this));
         this.tasks.addTask(2, this.aiControlledByPlayer = new EntityAIControlledByPlayer(this, 0.34F));
@@ -99,15 +100,6 @@ public class EntityWarriorPig extends EntityTameable
     {
         return true;
     }
-    
-    /**
-     * The speed it takes to move the entityliving's rotationPitch through the faceEntity method. This is only currently
-     * use in wolves.
-     */
-    public int getVerticalFaceSpeed()
-    {
-        return this.isSitting() ? 20 : super.getVerticalFaceSpeed();
-    }
 
     /**
      * Sets the active target the Task system uses for tracking
@@ -131,7 +123,7 @@ public class EntityWarriorPig extends EntityTameable
 
     public int getMaxHealth()
     {
-        return this.isTamed() ? 35 : 8;
+        return this.isTamed() ? 20 : 8;
     }
 
     protected void entityInit()
@@ -341,7 +333,7 @@ public class EntityWarriorPig extends EntityTameable
 
     public boolean attackEntityAsMob(Entity par1Entity)
     {
-        int i = this.isTamed() ? 6 : 2;
+        int i = this.isTamed() ? 4 : 2;
         return par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), i);
     }
 
@@ -350,13 +342,11 @@ public class EntityWarriorPig extends EntityTameable
      */
     public boolean interact(EntityPlayer par1EntityPlayer)
     {
+    	
     	ItemStack itemstack = par1EntityPlayer.inventory.getCurrentItem();
 
         if (this.isTamed())
         {
-        	/*int test = itemstack.getDamageVsEntity(par1EntityPlayer);
-        	System.out.println(test);
-        	System.out.println("test");*/
             if (itemstack != null)
             {
                 if (Item.itemsList[itemstack.itemID] instanceof ItemFood)
@@ -376,13 +366,13 @@ public class EntityWarriorPig extends EntityTameable
                         {
                             par1EntityPlayer.inventory.setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack)null);
                         }
-                    }
+                    	}
                     }
             	}	
-            }
+        	}
         return super.interact(par1EntityPlayer);
     }
-        
+
     @SideOnly(Side.CLIENT)
     public void handleHealthUpdate(byte par1)
     {
@@ -410,9 +400,9 @@ public class EntityWarriorPig extends EntityTameable
     /**
      * This function is used when two same-species animals in 'love mode' breed to generate the new baby animal.
      */
-    public EntityWarriorPig spawnBabyAnimal(EntityAgeable par1EntityAgeable)
+    public EntityAdvWarriorPig spawnBabyAnimal(EntityAgeable par1EntityAgeable)
     {
-        EntityWarriorPig entitywolf = new EntityWarriorPig(this.worldObj);
+        EntityAdvWarriorPig entitywolf = new EntityAdvWarriorPig(this.worldObj);
         String s = this.getOwnerName();
 
         if (s != null && s.trim().length() > 0)
@@ -451,13 +441,13 @@ public class EntityWarriorPig extends EntityTameable
         {
             return false;
         }
-        else if (!(par1EntityAnimal instanceof EntityWarriorPig))
+        else if (!(par1EntityAnimal instanceof EntityAdvWarriorPig))
         {
             return false;
         }
         else
         {
-            EntityWarriorPig entitywolf = (EntityWarriorPig)par1EntityAnimal;
+            EntityAdvWarriorPig entitywolf = (EntityAdvWarriorPig)par1EntityAnimal;
             return !entitywolf.isTamed() ? false : (entitywolf.isSitting() ? false : this.isInLove() && entitywolf.isInLove());
         }
     }
@@ -471,4 +461,30 @@ public class EntityWarriorPig extends EntityTameable
     {
         return this.spawnBabyAnimal(par1EntityAgeable);
     }
+
+	@Override
+	public int getSizeInventory() {
+		return 27;
+	}
+	
+	public int func_94087_l()
+    {
+        return 1;
+    }
+
+    public Block func_94093_n()
+    {
+        return Block.chest;
+    }
+
+    public int func_94085_r()
+    {
+        return 8;
+    }
+
+	@Override
+	public boolean isInvNameLocalized() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

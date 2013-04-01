@@ -10,9 +10,11 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
+import client.core.entity.EntityAdvWarriorPig;
 import client.core.entity.EntityBoss;
 import client.core.entity.EntityHeadPPiggy;
 import client.core.entity.EntityPigCapitalist;
+import client.core.entity.EntityWarriorPig;
 import client.core.handlers.ClientPacketHandler;
 import client.core.item.ItemWand;
 
@@ -130,8 +132,10 @@ public class ModJam {
 		int redColor = (255 << 16);
 		int orangeColor = (255 << 16)+ (200 << 8);
 		ModLoader.registerEntityID(EntityBoss.class, "Boss", ModLoader.getUniqueEntityId(), redColor,orangeColor);
-		ModLoader.registerEntityID(EntityHeadPPiggy.class, "Pig", ModLoader.getUniqueEntityId(), redColor,orangeColor);
-		ModLoader.registerEntityID(EntityPigCapitalist.class, "CapitalistPig", ModLoader.getUniqueEntityId(), redColor,orangeColor);
+		ModLoader.registerEntityID(EntityHeadPPiggy.class, "Pig", ModLoader.getUniqueEntityId());
+		ModLoader.registerEntityID(EntityPigCapitalist.class, "CapitalistPig", ModLoader.getUniqueEntityId());
+		ModLoader.registerEntityID(EntityWarriorPig.class, "WarriorPig", ModLoader.getUniqueEntityId());
+		ModLoader.registerEntityID(EntityAdvWarriorPig.class, "AdvWarriorPig", ModLoader.getUniqueEntityId());
 	}
 
 	/*@ForgeSubscribe
@@ -234,5 +238,67 @@ public class ModJam {
 					}
 					return;
 				}
+			if (target instanceof EntityPig && itemstack != null && itemstack.getItem() == Item.swordDiamond)
+			{
+					EntityPig oldpiggy = (EntityPig) ev.target;
+					World world = target.worldObj;
+
+					if (world.isRemote)
+					{
+						return;
+					}
+					EntityWarriorPig newpiggy = new EntityWarriorPig(world);
+					newpiggy.setLocationAndAngles(oldpiggy.posX, oldpiggy.posY, oldpiggy.posZ, oldpiggy.rotationYaw, oldpiggy.rotationPitch);
+					world.spawnEntityInWorld(newpiggy);
+					oldpiggy.setDead();
+					newpiggy.setTamed(true);
+					newpiggy.setPathToEntity((PathEntity)null);
+					newpiggy.setAttackTarget((EntityLiving)null);
+					newpiggy.setEntityHealth(20);
+					newpiggy.setOwner(player.username);
+					newpiggy.worldObj.setEntityState(newpiggy, (byte)7);
+					System.out.println("Attempted!");
+					if (!player.capabilities.isCreativeMode)
+					{
+						--itemstack.stackSize;
+					}
+
+					if (itemstack.stackSize <= 0)
+					{
+						player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack)null);
+					}
+					return;
+				}
+	if (target instanceof EntityPig && itemstack != null && itemstack.getItem() == Item.helmetDiamond)
+	{
+			EntityPig oldpiggy = (EntityPig) ev.target;
+			World world = target.worldObj;
+
+			if (world.isRemote)
+			{
+				return;
 			}
+			EntityAdvWarriorPig newpiggy = new EntityAdvWarriorPig(world);
+			newpiggy.setLocationAndAngles(oldpiggy.posX, oldpiggy.posY, oldpiggy.posZ, oldpiggy.rotationYaw, oldpiggy.rotationPitch);
+			world.spawnEntityInWorld(newpiggy);
+			oldpiggy.setDead();
+			newpiggy.setTamed(true);
+			newpiggy.setPathToEntity((PathEntity)null);
+			newpiggy.setAttackTarget((EntityLiving)null);
+			newpiggy.setEntityHealth(20);
+			newpiggy.setOwner(player.username);
+			newpiggy.worldObj.setEntityState(newpiggy, (byte)7);
+			System.out.println("Attempted!");
+			if (!player.capabilities.isCreativeMode)
+			{
+				--itemstack.stackSize;
+			}
+
+			if (itemstack.stackSize <= 0)
+			{
+				player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack)null);
+			}
+			return;
+		}
+	}
 		}
